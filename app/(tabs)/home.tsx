@@ -13,51 +13,6 @@ export default function TabOneScreen() {
     <ScrollView style={{}}>
       <Text style={styles.title}>Courses</Text>
       <View style={styles.container}>
-        <Link href="/modal" asChild>
-          <Pressable>
-            {({ pressed }) => (
-              <View style={{ opacity: pressed ? 0.5 : 1 }}>
-                <CourseBox />
-              </View>
-            )}
-          </Pressable>
-        </Link>
-        <Link href="/modal" asChild>
-          <Pressable>
-            {({ pressed }) => (
-              <View style={{ opacity: pressed ? 0.5 : 1 }}>
-                <CourseBox />
-              </View>
-            )}
-          </Pressable>
-        </Link>
-        <Link href="/modal" asChild>
-          <Pressable>
-            {({ pressed }) => (
-              <View style={{ opacity: pressed ? 0.5 : 1 }}>
-                <CourseBox />
-              </View>
-            )}
-          </Pressable>
-        </Link>
-        <Link href="/modal" asChild>
-          <Pressable>
-            {({ pressed }) => (
-              <View style={{ opacity: pressed ? 0.5 : 1 }}>
-                <CourseBox />
-              </View>
-            )}
-          </Pressable>
-        </Link>
-        <Link href="/modal" asChild>
-          <Pressable>
-            {({ pressed }) => (
-              <View style={{ opacity: pressed ? 0.5 : 1 }}>
-                <CourseBox />
-              </View>
-            )}
-          </Pressable>
-        </Link>
         <CourseBox />
         <CourseBox />
         <CourseBox />
