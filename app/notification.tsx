@@ -32,5 +32,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 10,
     padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

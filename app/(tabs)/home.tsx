@@ -10,7 +10,7 @@ import Colors from "../../constants/Colors";
 
 export default function TabOneScreen() {
   return (
-    <ScrollView style={{}}>
+    <ScrollView style={{ backgroundColor: "white" }}>
       <Text style={styles.title}>Courses</Text>
       <View style={styles.container}>
         <CourseBox />
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
+    gap: 7,
     flexWrap: "wrap",
   },
   title: {

@@ -1,7 +1,6 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
 import { Pressable, useColorScheme } from "react-native";
-
 import Colors from "../../constants/Colors";
 
 /**
@@ -30,7 +29,7 @@ export default function TabLayout() {
           title: "Hello , {name}",
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
-            <Link href="/createAccount" asChild>
+            <Link href="/signin" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
