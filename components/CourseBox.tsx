@@ -65,19 +65,6 @@ export default function CourseBox(): JSX.Element {
   );
 }
 
-function CourseImage(): JSX.Element {
-  return <View></View>;
-}
-
-function CourseName(): JSX.Element {
-  return (
-    <View>
-      <Text>NoSQl</Text>
-    </View>
-  );
-}
-
-function QrIcon() {}
 const styles = StyleSheet.create({
   heading: {
     fontSize: 18,
