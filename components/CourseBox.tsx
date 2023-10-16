@@ -32,7 +32,7 @@ export default function CourseBox(): JSX.Element {
           </Pressable>
         </Link>
 
-        <Link href="/CourseDetail" asChild>
+        <Link href="/courseDetail" asChild>
           <Pressable>
             {({ pressed }) => (
               <View style={{ opacity: pressed ? 0.5 : 1 }}>
