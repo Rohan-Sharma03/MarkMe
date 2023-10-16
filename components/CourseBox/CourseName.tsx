@@ -17,18 +17,17 @@ const styles = StyleSheet.create({
     alignContent: "center",
     paddingLeft: 10,
     borderWidth: 1,
+    marginBottom: 5,
   },
   title: {
     fontSize: 35,
     fontWeight: "bold",
-    marginBottom: 10,
     color: "#333", // Text color (you can change the value)
     lineHeight: 40, // Line height for the title (you can change the value)
   },
   subtitle: {
     fontSize: 20,
     fontWeight: "normal",
-    marginBottom: 10,
     color: "#666", // Text color (you can change the value)
     lineHeight: 24, // Line height for the subtitle (you can change the value)
   },

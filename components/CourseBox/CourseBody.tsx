@@ -6,7 +6,7 @@ import { Link } from "expo-router";
 export default function CourseBody(): JSX.Element {
   return (
     <View>
-      <ScrollView style={{ height: "65%" }}>
+      <ScrollView>
         <View style={Styles.container1}>
           <Link href="/qrScan" asChild>
             <Pressable>
@@ -48,6 +48,11 @@ const Styles = StyleSheet.create({
     flexDirection: "column",
     gap: 10,
     padding: 10,
+    height: "100%",
+    width: "97%",
+    justifyContent: "center",
+    alignSelf: "center",
+    marginBottom: 5,
   },
   container: {
     alignItems: "center",
