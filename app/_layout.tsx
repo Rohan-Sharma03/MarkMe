@@ -53,7 +53,38 @@ function RootLayoutNav() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        <Stack.Screen
+          name="modal"
+          options={{ presentation: "modal", title: "Modal" }}
+        />
+        <Stack.Screen
+          name="courseDetail"
+          options={{ presentation: "modal", title: "Detials" }}
+        />
+        <Stack.Screen
+          name="createAccount"
+          options={{ presentation: "modal", title: "SignUp" }}
+        />
+        <Stack.Screen
+          name="notification"
+          options={{ presentation: "modal", title: "Notifications" }}
+        />
+        <Stack.Screen
+          name="qrScan"
+          options={{ presentation: "modal", title: "QR Scanner" }}
+        />
+        <Stack.Screen
+          name="schedule"
+          options={{ presentation: "modal", title: "Time Table" }}
+        />
+        <Stack.Screen
+          name="signin"
+          options={{ presentation: "modal", title: "Sign Up " }}
+        />
+        <Stack.Screen
+          name="notificationSummary"
+          options={{ presentation: "modal", title: "Detials" }}
+        />
       </Stack>
     </ThemeProvider>
   );
