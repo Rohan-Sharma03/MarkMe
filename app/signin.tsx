@@ -1,7 +1,17 @@
+import { FontAwesome } from "@expo/vector-icons";
+import { Link } from "expo-router";
 import * as React from "react";
-import { View, Text, TextInput, StyleSheet, Button, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Button,
+  Alert,
+  Pressable,
+} from "react-native";
 
-export default function Signin() {
+export default function Signin(): JSX.Element {
   const [email, onChangeEmail] = React.useState("");
   const [password, onChangePassword] = React.useState("");
 
@@ -34,8 +44,18 @@ export default function Signin() {
         <Text style={styles.subtitle}>Forgot your password?</Text>
       </View>
       <View style={styles.signUpContainer}>
-        <Text style={styles.subtitle}>Don’t have an account yet?</Text>
-        <Text style={styles.subtitle}>Sign Up</Text>
+        <Link href="/createAccount" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.pressable,
+              { opacity: pressed ? 0.5 : 1 },
+            ]}
+          >
+            <Text style={styles.subtitle}>
+              Don’t have an account yet? Sign Up
+            </Text>
+          </Pressable>
+        </Link>
       </View>
     </View>
   );
@@ -68,14 +88,25 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   subtitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#666",
+    fontSize: 18,
+    color: "#333",
   },
   forgotPasswordContainer: {
     marginTop: 20,
   },
   signUpContainer: {
     marginTop: 20,
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  icon: {
+    paddingHorizontal: 10,
+  },
+
+  pressable: {
+    flex: 1,
   },
 });
