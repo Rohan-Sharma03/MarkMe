@@ -1,7 +1,16 @@
+import { Link } from "expo-router";
 import * as React from "react";
-import { View, Text, TextInput, StyleSheet, Button, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Button,
+  Alert,
+  Pressable,
+} from "react-native";
 
-export default function CreateAccount() {
+export default function CreateAccount(): JSX.Element {
   const [fullName, onChangeFullName] = React.useState("");
   const [email, onChangeEmail] = React.useState("");
   const [rollNumber, onChangeRollNumber] = React.useState("");
@@ -53,11 +62,21 @@ export default function CreateAccount() {
         />
       </View>
       <View style={styles.forgotPasswordContainer}>
-        <Text style={styles.subtitle}>Forgot your password?</Text>
+        <Text style={styles.subtitle}>Need any Help?</Text>
       </View>
       <View style={styles.signInContainer}>
-        <Text style={styles.subtitle}>Already have an account?</Text>
-        <Text style={styles.subtitle}>Sign in to your account</Text>
+        <Link href="/signin" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.pressable,
+              { opacity: pressed ? 0.5 : 1 },
+            ]}
+          >
+            <Text style={styles.subtitle}>
+              Already have an account?Sign in to your account
+            </Text>
+          </Pressable>
+        </Link>
       </View>
     </View>
   );
@@ -99,5 +118,8 @@ const styles = StyleSheet.create({
   },
   signInContainer: {
     marginTop: 20,
+  },
+  pressable: {
+    flex: 1,
   },
 });
