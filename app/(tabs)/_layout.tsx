@@ -26,10 +26,10 @@ export default function TabLayout() {
         name="home"
         options={{
           tabBarLabel: "Home", // Change the label instead of name
-          title: "Hello , {name}",
+          title: "Hello, {name}",
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
-            <Link href="/signin" asChild>
+            <Link href="/modal" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
