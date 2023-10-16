@@ -1,12 +1,15 @@
-import { StyleSheet } from "react-native";
+import { Button, Pressable, StyleSheet } from "react-native";
 import EditScreenInfo from "../../components/EditScreenInfo";
 import { Text, View } from "../../components/Themed";
 import { Image } from "expo-image";
+import { Link, useRouter } from "expo-router";
+import { FontAwesome } from "@expo/vector-icons";
 
 export const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
 export default function TabTwoScreen() {
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
@@ -22,6 +25,7 @@ export default function TabTwoScreen() {
         <Text style={styles.text}>Email: abc@gmail.com</Text>
         <Text style={styles.text}>Registered Number: 9823758457</Text>
         <Text style={styles.text}>Courses Enrolled: 4</Text>
+        <Button title="log out" onPress={() => router.push("/signin")} />
       </View>
     </View>
   );
