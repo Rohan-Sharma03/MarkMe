@@ -1,6 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import * as React from "react";
+import axios from "axios";
 import {
   View,
   Text,
@@ -12,6 +13,32 @@ import {
 } from "react-native";
 
 export default function Signin(): JSX.Element {
+  const getData = async () => {
+    try {
+      const res = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/testAPI`);
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // var requestOptions = {};
+  // console.log(process.env.EXPO_PUBLIC_API_URL);
+
+  // const getMovies = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.EXPO_PUBLIC_API_URL}/testAPI`
+  //     );
+  //     const json = await response.json();
+  //     console.log(json.info);
+  //     Alert.alert(json.info);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // getMovies();
   const [email, onChangeEmail] = React.useState("");
   const [password, onChangePassword] = React.useState("");
 
@@ -35,10 +62,7 @@ export default function Signin(): JSX.Element {
           placeholder="Password"
           secureTextEntry={true}
         />
-        <Button
-          title="Submit"
-          onPress={() => Alert.alert("Simple Button pressed")}
-        />
+        <Button title="Submit" onPress={() => getData()} />
       </View>
       <View style={styles.forgotPasswordContainer}>
         <Text style={styles.subtitle}>Forgot your password?</Text>
