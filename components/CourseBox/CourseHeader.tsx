@@ -1,8 +1,12 @@
 import { View, Text, StyleSheet } from "react-native";
-export default function CourseHeader(): JSX.Element {
+export default function CourseHeader({
+  course_name,
+}: {
+  course_name: string;
+}): JSX.Element {
   return (
     <View style={Styles.container}>
-      <Text style={Styles.title}>Course Header</Text>
+      <Text style={Styles.title}>{course_name}</Text>
       <Text>
         this course amins to make you understand how data is used in analytical
         purpose
