@@ -15,7 +15,9 @@ import {
 export default function Signin(): JSX.Element {
   const getData = async () => {
     try {
-      const res = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/testAPI`);
+      const res = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_URL}/api/users`
+      );
       console.log(res.data);
     } catch (error) {
       console.log(error);
@@ -25,18 +27,18 @@ export default function Signin(): JSX.Element {
   // var requestOptions = {};
   // console.log(process.env.EXPO_PUBLIC_API_URL);
 
-  // const getMovies = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       `${process.env.EXPO_PUBLIC_API_URL}/testAPI`
-  //     );
-  //     const json = await response.json();
-  //     console.log(json.info);
-  //     Alert.alert(json.info);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const getMovies = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/testAPI`
+      );
+      const json = await response.json();
+      console.log(json.info);
+      Alert.alert(json.info);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // getMovies();
   const [email, onChangeEmail] = React.useState("");
@@ -65,7 +67,16 @@ export default function Signin(): JSX.Element {
         <Button title="Submit" onPress={() => getData()} />
       </View>
       <View style={styles.forgotPasswordContainer}>
-        <Text style={styles.subtitle}>Forgot your password?</Text>
+        <Link href="/credential" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.pressable,
+              { opacity: pressed ? 0.5 : 1 },
+            ]}
+          >
+            <Text style={styles.subtitle}>Forgot your password?</Text>
+          </Pressable>
+        </Link>
       </View>
       <View style={styles.signUpContainer}>
         <Link href="/createAccount" asChild>
