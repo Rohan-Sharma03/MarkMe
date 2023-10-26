@@ -1,4 +1,5 @@
-import { Link } from "expo-router";
+import axios from "axios";
+import { Link, useRouter } from "expo-router";
 import * as React from "react";
 import {
   View,
@@ -8,14 +9,55 @@ import {
   Button,
   Alert,
   Pressable,
+  ToastAndroid,
 } from "react-native";
 
 export default function CreateAccount(): JSX.Element {
+  const router = useRouter();
   const [fullName, onChangeFullName] = React.useState("");
   const [email, onChangeEmail] = React.useState("");
+  const [admitYear, onChangeAdmitYear] = React.useState("");
+  const [branch, onChangeBranch] = React.useState("");
   const [rollNumber, onChangeRollNumber] = React.useState("");
-  const [phoneNumber, onChangePhoneNumber] = React.useState("");
-  const [password, onChangePassword] = React.useState("");
+  const [contactNumber, onChangeContactNumber] = React.useState("");
+  const [section, onChangeSection] = React.useState("");
+  function showToast() {
+    ToastAndroid.show("Request sent successfully!", ToastAndroid.SHORT);
+  }
+  const accountData = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_API_URL}/api/csAccount`,
+        {
+          student_id: rollNumber,
+          student_name: fullName,
+          email: email,
+          contact_number: contactNumber,
+          branch: branch,
+          section: section,
+          admitYear: admitYear,
+        }
+      );
+      if (response.status === 200) {
+        console.log(response.data);
+        showToast();
+        await new Promise((r) => setTimeout(r, 2000));
+        // setInterval(() => {
+        router.push("/credential");
+        // }, 2000);
+        // Handle success if needed
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "An error occurred. Please try again later.");
+    }
+  };
+
+  const temp = async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+    // setInterval(() => {
+    router.push("/credential");
+  };
 
   return (
     <View style={styles.container}>
@@ -44,22 +86,31 @@ export default function CreateAccount(): JSX.Element {
         />
         <TextInput
           style={styles.input}
-          onChangeText={onChangePhoneNumber}
-          value={phoneNumber}
-          placeholder="Phone Number"
+          onChangeText={onChangeContactNumber}
+          value={contactNumber}
+          placeholder="e.g. +91 391034804"
           keyboardType="numeric"
         />
         <TextInput
           style={styles.input}
-          onChangeText={onChangePassword}
-          value={password}
-          placeholder="Password"
-          secureTextEntry={true}
+          onChangeText={onChangeBranch}
+          value={branch}
+          placeholder="B Tech CSE"
+          // secureTextEntry={true}
         />
-        <Button
-          title="Submit"
-          onPress={() => Alert.alert("Simple Button pressed")}
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeSection}
+          value={section}
+          placeholder="section"
         />
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeAdmitYear}
+          value={admitYear}
+          placeholder="e.g. 2020"
+        />
+        <Button title="Submit" onPress={accountData} />
       </View>
       <View style={styles.forgotPasswordContainer}>
         <Text style={styles.subtitle}>Need any Help?</Text>
