@@ -59,15 +59,15 @@ function RootLayoutNav() {
         />
         <Stack.Screen
           name="courseDetail"
-          options={{ presentation: "modal", title: "Detials" }}
+          options={{ presentation: "modal", title: "Course Details" }}
         />
         <Stack.Screen
           name="createAccount"
-          options={{ presentation: "modal", title: "SignUp" }}
+          options={{ presentation: "modal", title: "Create Account" }}
         />
         <Stack.Screen
           name="notification"
-          options={{ presentation: "modal", title: "Notifications" }}
+          options={{ presentation: "modal", title: "Notification" }}
         />
         <Stack.Screen
           name="qrScan"
@@ -75,15 +75,19 @@ function RootLayoutNav() {
         />
         <Stack.Screen
           name="schedule"
-          options={{ presentation: "modal", title: "Time Table" }}
+          options={{ presentation: "modal", title: "Class Schedule" }}
         />
         <Stack.Screen
           name="signin"
-          options={{ presentation: "modal", title: "Sign Up " }}
+          options={{ presentation: "modal", title: "Sign Up" }}
         />
         <Stack.Screen
           name="notificationSummary"
-          options={{ presentation: "modal", title: "Detials" }}
+          options={{ presentation: "modal", title: "Notification Details" }}
+        />
+        <Stack.Screen
+          name="credential"
+          options={{ presentation: "modal", title: "Set Password" }}
         />
       </Stack>
     </ThemeProvider>
