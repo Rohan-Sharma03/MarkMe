@@ -6,6 +6,7 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  Button,
 } from "react-native";
 
 export default function Credential() {
@@ -54,9 +55,9 @@ export default function Credential() {
       {!passwordMatch && (
         <Text style={styles.errorText}>Passwords do not match</Text>
       )}
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Submit</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <Button title="Submit" onPress={handleSubmit} color="#4285f4" />
+      </View>
     </View>
   );
 }
@@ -66,8 +67,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f9f9f9",
-    paddingHorizontal: 20,
+    backgroundColor: "white",
+    padding: 20,
   },
   title: {
     fontSize: 24,
@@ -77,34 +78,28 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   input: {
-    height: 40,
+    height: 50,
     width: "100%",
     marginVertical: 10,
     borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
+    padding: 15,
+    borderRadius: 10,
     borderColor: "#ccc",
     backgroundColor: "#fff",
+    fontSize: 16,
   },
   inputError: {
     borderColor: "red",
   },
   errorText: {
     color: "red",
-    marginTop: 5,
+    marginTop: 10,
     textAlign: "center",
   },
-  button: {
-    backgroundColor: "#4CAF50",
-    padding: 10,
-    borderRadius: 5,
+  buttonContainer: {
     marginTop: 20,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
+    width: "70%",
+    alignSelf: "center",
+    borderRadius: 20,
   },
 });
-
-// export { Credential };
