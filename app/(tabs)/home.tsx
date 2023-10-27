@@ -1,54 +1,57 @@
-import { Pressable, StyleSheet } from "react-native";
-
+import {
+  Pressable,
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  Dimensions,
+} from "react-native";
 import EditScreenInfo from "../../components/EditScreenInfo";
-import { Text, View } from "../../components/Themed";
-import { ScrollView } from "react-native-gesture-handler";
-import CourseBox from "../../components/CourseBox";
-import { FontAwesome } from "@expo/vector-icons";
-import { Link } from "expo-router";
-import axios from "axios";
 import { useEffect, useState } from "react";
+
+import CourseBox from "../../components/CourseBox";
+import axios from "axios";
 
 export default function TabOneScreen() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const getData = async () => {
     try {
       const res = await axios.get(
         `${process.env.EXPO_PUBLIC_API_URL}/api/getCourses`
       );
       setData(res.data);
-      console.log(res.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
+
   useEffect(() => {
     getData();
   }, []);
-  return (
-    <ScrollView style={{ backgroundColor: "white" }}>
-      <Text style={styles.title}>Courses</Text>
-      <View style={styles.container}>
-        {data.map((course, index) => (
-          <CourseBox
-            key={index}
-            course_name={course.course_name}
-            course_id={course.course_id}
-          />
-        ))}
 
-        {/* <CourseBox />
-        <CourseBox />
-        <CourseBox />
-        <CourseBox />
-        <CourseBox />
-        <CourseBox />
-        <CourseBox />
-        <CourseBox />
-        <CourseBox />
-        <CourseBox />
-        <CourseBox /> */}
-      </View>
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Courses</Text>
+      {loading ? (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : (
+        <View style={styles.courseContainer}>
+          {data.map((course, index) => (
+            <CourseBox
+              key={index}
+              course_name={course.course_name}
+              course_id={course.course_id}
+            />
+          ))}
+        </View>
+      )}
       <EditScreenInfo path="app/(tabs)/home.tsx" />
     </ScrollView>
   );
@@ -56,22 +59,27 @@ export default function TabOneScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+  },
+  courseContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 7,
     flexWrap: "wrap",
+    justifyContent: "space-around",
+    padding: 8,
+    gap: 8,
   },
   title: {
-    fontSize: 25,
-    marginTop: 10,
-    marginBottom: 7,
+    fontSize: 30,
     fontWeight: "bold",
-    paddingLeft: 10,
+    textAlign: "left",
+    paddingLeft: 15,
+    marginTop: 10,
+    marginBottom: 10,
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
