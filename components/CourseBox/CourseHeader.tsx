@@ -1,20 +1,18 @@
 import { View, Text, StyleSheet } from "react-native";
 export default function CourseHeader({
   course_name,
+  course_objective,
 }: {
   course_name: string;
+  course_objective: string;
 }): JSX.Element {
   return (
     <View style={Styles.container}>
       <Text style={Styles.title}>{course_name}</Text>
-      <Text>
-        this course amins to make you understand how data is used in analytical
-        purpose
-      </Text>
+      <Text style={Styles.subtitle}> {course_objective}</Text>
     </View>
   );
 }
-
 const Styles = StyleSheet.create({
   container: {
     alignItems: "center",
