@@ -1,6 +1,4 @@
-import axios from "axios";
-import { Link, useRouter } from "expo-router";
-import * as React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,61 +8,55 @@ import {
   Alert,
   Pressable,
   ToastAndroid,
+  ScrollView,
 } from "react-native";
 
-export default function CreateAccount(): JSX.Element {
-  const router = useRouter();
-  const [fullName, onChangeFullName] = React.useState("");
-  const [email, onChangeEmail] = React.useState("");
-  const [admitYear, onChangeAdmitYear] = React.useState("");
-  const [branch, onChangeBranch] = React.useState("");
-  const [rollNumber, onChangeRollNumber] = React.useState("");
-  const [contactNumber, onChangeContactNumber] = React.useState("");
-  const [section, onChangeSection] = React.useState("");
+export default function CreateAccount() {
+  const [fullName, onChangeFullName] = useState("");
+  const [email, onChangeEmail] = useState("");
+  const [admitYear, onChangeAdmitYear] = useState("");
+  const [branch, onChangeBranch] = useState("");
+  const [rollNumber, onChangeRollNumber] = useState("");
+  const [contactNumber, onChangeContactNumber] = useState("");
+  const [section, onChangeSection] = useState("");
+  const [gender, onChangeGender] = useState("");
+
   function showToast() {
     ToastAndroid.show("Request sent successfully!", ToastAndroid.SHORT);
   }
+
+  const validateFields = () => {
+    if (
+      fullName === "" ||
+      email === "" ||
+      admitYear === "" ||
+      branch === "" ||
+      rollNumber === "" ||
+      contactNumber === "" ||
+      section === "" ||
+      gender === ""
+    ) {
+      Alert.alert("Error", "Please fill in all the fields.");
+      return false;
+    }
+    return true;
+  };
+
   const accountData = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/csAccount`,
-        {
-          student_id: rollNumber,
-          student_name: fullName,
-          email: email,
-          contact_number: contactNumber,
-          branch: branch,
-          section: section,
-          admitYear: admitYear,
-        }
-      );
-      if (response.status === 200) {
-        console.log(response.data);
-        showToast();
-        await new Promise((r) => setTimeout(r, 2000));
-        // setInterval(() => {
-        router.push("/credential");
-        // }, 2000);
-        // Handle success if needed
-      }
+      // if (!validateFields()) return;
+      // Add your axios request here
+      showToast();
     } catch (error) {
       console.error(error);
       Alert.alert("Error", "An error occurred. Please try again later.");
     }
   };
 
-  const temp = async () => {
-    await new Promise((r) => setTimeout(r, 2000));
-    // setInterval(() => {
-    router.push("/credential");
-  };
-
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Welcome</Text>
-        <Text style={styles.title}>Create an Account</Text>
-      </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Welcome</Text>
+      <Text style={styles.title}>Create an Account</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -88,89 +80,100 @@ export default function CreateAccount(): JSX.Element {
           style={styles.input}
           onChangeText={onChangeContactNumber}
           value={contactNumber}
-          placeholder="e.g. +91 391034804"
+          placeholder="Contact Number"
           keyboardType="numeric"
         />
         <TextInput
           style={styles.input}
           onChangeText={onChangeBranch}
           value={branch}
-          placeholder="B Tech CSE"
-          // secureTextEntry={true}
+          placeholder="Branch"
         />
         <TextInput
           style={styles.input}
           onChangeText={onChangeSection}
           value={section}
-          placeholder="section"
+          placeholder="Section"
         />
         <TextInput
           style={styles.input}
           onChangeText={onChangeAdmitYear}
           value={admitYear}
-          placeholder="e.g. 2020"
+          placeholder="Admit Year"
+          keyboardType="numeric"
         />
-        <Button title="Submit" onPress={accountData} />
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeGender}
+          value={gender}
+          placeholder="Gender"
+        />
+        <View style={styles.buttonContainer}>
+          <Button title="Submit" onPress={accountData} color="#4285f4" />
+        </View>
       </View>
-      <View style={styles.forgotPasswordContainer}>
+      <View style={styles.needHelpContainer}>
         <Text style={styles.subtitle}>Need any Help?</Text>
       </View>
-      <View style={styles.signInContainer}>
-        <Link href="/signin" asChild>
-          <Pressable
-            style={({ pressed }) => [
-              styles.pressable,
-              { opacity: pressed ? 0.5 : 1 },
-            ]}
-          >
-            <Text style={styles.subtitle}>
-              Already have an account?Sign in to your account
-            </Text>
-          </Pressable>
-        </Link>
-      </View>
-    </View>
+      <Pressable
+        onPress={() => console.log("Navigate to sign in")}
+        style={styles.signInContainer}
+      >
+        <Text style={styles.subtitle}>
+          Already have an account? Sign in Now!
+        </Text>
+      </Pressable>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 30,
+    paddingVertical: 30,
+    backgroundColor: "white",
   },
   inputContainer: {
     width: "80%",
   },
   input: {
-    height: 40,
+    height: 50,
+    width: "100%",
     marginVertical: 10,
     borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
+    padding: 15,
+    borderRadius: 10,
+    borderColor: "#ccc",
+    backgroundColor: "#fff",
+    fontSize: 16,
   },
   title: {
     fontSize: 35,
     fontWeight: "bold",
     marginBottom: 10,
     color: "#333",
+    textAlign: "center",
   },
   subtitle: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#666",
+    textAlign: "center",
+    marginTop: 10,
   },
-  forgotPasswordContainer: {
+  needHelpContainer: {
+    marginTop: 10,
+  },
+  buttonContainer: {
     marginTop: 20,
+    width: "70%",
+    alignSelf: "center",
+    borderRadius: 20,
   },
   signInContainer: {
-    marginTop: 20,
-  },
-  pressable: {
-    flex: 1,
+    // marginTop: ,
+    paddingBottom: 20,
   },
 });
