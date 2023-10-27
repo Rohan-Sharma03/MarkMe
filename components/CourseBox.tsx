@@ -1,92 +1,94 @@
 import * as React from "react";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { Image } from "expo-image";
-
 import { useNavigation } from "@react-navigation/native";
-import { Link, useRouter } from "expo-router";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
+
 export const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
 export default function CourseBox({
   course_name,
   course_id,
+  course_objective,
 }: {
   course_name: string;
   course_id: string;
+  course_objective: string;
 }): JSX.Element {
+  const params = useLocalSearchParams();
+  const { id = 42, other } = params;
   const facultyInOffice = false; // Change this to determine if the faculty is in the office
   const navigation = useNavigation();
   const router = useRouter();
 
   const handlePressC = () => {
-    router.push({ pathname: "/courseDetail" });
+    router.push({
+      pathname: "/courseDetail",
+      params: {
+        // post: "random",
+        // id: 86,
+        course_name: course_name,
+        course_id: course_id,
+        course_objective: course_objective,
+      },
+    });
+    // navigation.navigate("CourseDetail", { courseId: course_id });
   };
   const handlePressQR = () => {
-    router.push("/qrScan");
+    router.push({
+      pathname: "/qrScan",
+      params: {
+        post: "random",
+        id: 86,
+        other: "This is other",
+      },
+    });
+    // navigation.navigate("QRScan");
   };
 
   return (
     <View style={styles.elevation}>
-      <View style={styles.card}>
-        <View
-          style={{
-            width: "100%",
-            minHeight: 80,
-            backgroundColor: "#DAF7A6",
-          }}
-        ></View>
-        <Pressable onPress={handlePressQR}>
-          {({ pressed }) => (
-            <View style={{ opacity: pressed ? 0.5 : 1 }}>
-              <FontAwesome
-                style={{ left: 130, top: -70 }}
-                name="qrcode"
-                size={40}
-                color="#60a5fa"
-              />
-            </View>
-          )}
-        </Pressable>
+      <View
+        style={{
+          padding: 10,
+          width: "100%",
+          minHeight: 80,
+          backgroundColor: "#DAF7A6",
+        }}
+      >
+        <TouchableOpacity onPress={handlePressQR}>
+          <FontAwesome
+            style={{ left: 5, color: "#60a5fa" }}
+            name="qrcode"
+            size={50}
+          />
+        </TouchableOpacity>
+      </View>
 
-        <Link
-          href={{
-            pathname: "/courseDetail",
-            params: { id: "rohan" },
-          }}
-          asChild
-        >
-          <Pressable onPress={handlePressC}>
-            {({ pressed }) => (
-              <View style={{ opacity: pressed ? 0.5 : 1 }}>
-                <Text
-                  style={{
-                    top: -30,
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    paddingLeft: 10,
-                    width: 180,
-                  }}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {course_name}
-                </Text>
-              </View>
-            )}
-          </Pressable>
-        </Link>
+      <View style={styles.card}>
+        <TouchableOpacity onPress={handlePressC}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              padding: 10,
+              width: 180,
+            }}
+            numberOfLines={1}
+            // ellipsizeMode="tail"
+          >
+            {course_name}
+          </Text>
+        </TouchableOpacity>
         <Text
           style={{
-            top: -20,
-            marginTop: -4,
-            marginBottom: -3,
             paddingLeft: 10,
           }}
         >
           {course_id}
         </Text>
-        <View style={{ position: "absolute", top: 120, right: 20 }}>
+        <View style={{ position: "absolute", top: 40, right: 10 }}>
           <MaterialIcons
             name={facultyInOffice ? "schedule" : "schedule-send"}
             size={30}
@@ -99,23 +101,12 @@ export default function CourseBox({
 }
 
 const styles = StyleSheet.create({
-  heading: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 13,
-  },
   card: {
-    borderRadius: 8,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
     backgroundColor: "gray",
     minWidth: "47%",
-    minHeight: 120,
-  },
-
-  shadowProp: {
-    shadowOffset: { width: 0, height: 10 },
-    shadowColor: "#171717",
-    shadowOpacity: 0.4,
-    shadowRadius: 2,
+    minHeight: 90,
   },
   elevation: {
     shadowColor: "#ff3333",
