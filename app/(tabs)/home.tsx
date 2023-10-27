@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import CourseBox from "../../components/CourseBox";
 import axios from "axios";
 
-export default function TabOneScreen() {
+export default function home() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,6 +48,7 @@ export default function TabOneScreen() {
               key={index}
               course_name={course.course_name}
               course_id={course.course_id}
+              course_objective={course.course_objective}
             />
           ))}
         </View>
