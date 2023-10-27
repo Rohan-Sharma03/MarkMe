@@ -7,13 +7,17 @@ import {
   Text,
   TextInput,
   StyleSheet,
+  TouchableOpacity,
   Button,
   Alert,
-  Pressable,
 } from "react-native";
 
 export default function Signin(): JSX.Element {
+  const [email, onChangeEmail] = React.useState("");
+  const [password, onChangePassword] = React.useState("");
+
   const getData = async () => {
+    // if (email && password) {
     try {
       const res = await axios.get(
         `${process.env.EXPO_PUBLIC_API_URL}/api/users`
@@ -22,27 +26,10 @@ export default function Signin(): JSX.Element {
     } catch (error) {
       console.log(error);
     }
+    // } else {
+    //   Alert.alert("Error", "Please fill in all the fields.");
+    // }
   };
-
-  // var requestOptions = {};
-  // console.log(process.env.EXPO_PUBLIC_API_URL);
-
-  const getMovies = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/testAPI`
-      );
-      const json = await response.json();
-      console.log(json.info);
-      Alert.alert(json.info);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // getMovies();
-  const [email, onChangeEmail] = React.useState("");
-  const [password, onChangePassword] = React.useState("");
 
   return (
     <View style={styles.container}>
@@ -64,32 +51,20 @@ export default function Signin(): JSX.Element {
           placeholder="Password"
           secureTextEntry={true}
         />
-        <Button title="Submit" onPress={() => getData()} />
+        <View style={styles.buttonContainer}>
+          <Button title="Submit" onPress={getData} color="#4285f4" />
+        </View>
       </View>
       <View style={styles.forgotPasswordContainer}>
         <Link href="/credential" asChild>
-          <Pressable
-            style={({ pressed }) => [
-              styles.pressable,
-              { opacity: pressed ? 0.5 : 1 },
-            ]}
-          >
-            <Text style={styles.subtitle}>Forgot your password?</Text>
-          </Pressable>
+          <Text style={styles.subtitle}>Forgot your password?</Text>
         </Link>
       </View>
       <View style={styles.signUpContainer}>
         <Link href="/createAccount" asChild>
-          <Pressable
-            style={({ pressed }) => [
-              styles.pressable,
-              { opacity: pressed ? 0.5 : 1 },
-            ]}
-          >
-            <Text style={styles.subtitle}>
-              Don’t have an account yet? Sign Up
-            </Text>
-          </Pressable>
+          <Text style={styles.subtitle}>
+            Don’t have an account yet? Sign Up
+          </Text>
         </Link>
       </View>
     </View>
@@ -101,6 +76,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "white",
   },
   header: {
     alignItems: "center",
@@ -110,11 +86,15 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   input: {
-    height: 40,
+    height: 50,
+    width: "100%",
     marginVertical: 10,
     borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
+    padding: 15,
+    borderRadius: 10,
+    borderColor: "#ccc",
+    backgroundColor: "#fff",
+    fontSize: 16,
   },
   title: {
     fontSize: 35,
@@ -123,25 +103,22 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   subtitle: {
-    fontSize: 18,
-    color: "#333",
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#666",
+    textAlign: "center",
+    // marginTop: 20,
   },
   forgotPasswordContainer: {
     marginTop: 20,
   },
   signUpContainer: {
+    marginTop: 10,
+  },
+  buttonContainer: {
     marginTop: 20,
-  },
-  content: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-  },
-  icon: {
-    paddingHorizontal: 10,
-  },
-
-  pressable: {
-    flex: 1,
+    width: "70%",
+    alignSelf: "center",
+    borderRadius: 20,
   },
 });
