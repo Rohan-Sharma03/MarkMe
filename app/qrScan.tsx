@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 
 export default function qrScan(): JSX.Element {
+  const navigation = useNavigation();
+  const router = useRouter();
+  const params = useLocalSearchParams();
+  const { id, other } = params;
+
+  console.log(id, other);
+
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState<boolean>(false);
   const [text, setText] = useState<string>("Not yet scanned");
@@ -92,6 +100,6 @@ const styles = StyleSheet.create({
     width: 300,
     overflow: "hidden",
     borderRadius: 30,
-    backgroundColor: "tomato",
+    backgroundColor: "gray",
   },
 });
