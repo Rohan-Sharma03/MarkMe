@@ -7,14 +7,23 @@ import {
   ActivityIndicator,
   Dimensions,
 } from "react-native";
-import EditScreenInfo from "../../components/EditScreenInfo";
 import { useEffect, useState } from "react";
 
 import CourseBox from "../../components/CourseBox";
 import axios from "axios";
+import { useLocalSearchParams } from "expo-router";
 
-export default function home() {
-  const [data, setData] = useState([]);
+interface Course {
+  course_id: string;
+  course_name: string;
+  course_objective: string;
+  instructor_id: string;
+  timetable_id: string;
+  course_semester: number;
+}
+
+export default function Home() {
+  const [data, setData] = useState<Course[]>([]); // Explicitly provide an interface for the data type
   const [loading, setLoading] = useState(true);
 
   const getData = async () => {
@@ -53,7 +62,6 @@ export default function home() {
           ))}
         </View>
       )}
-      <EditScreenInfo path="app/(tabs)/home.tsx" />
     </ScrollView>
   );
 }
