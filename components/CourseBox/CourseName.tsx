@@ -1,34 +1,27 @@
-import { View, Text, StyleSheet } from "react-native";
+import React from "react";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
+
 export default function CourseName({ name }: { name: string }): JSX.Element {
+  const screenWidth = Dimensions.get("window").width;
   return (
-    <View style={styles.boxSize}>
-      <Text style={styles.subtitle}>{name}</Text>
+    <View style={[styles.box, { width: screenWidth * 0.9 }]}>
+      <Text style={styles.text}>{name}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  boxSize: {
-    width: "100%",
+  box: {
     height: 60,
-    backgroundColor: "#F2F5F7",
-    borderRadius: 5,
-    justifyContent: "center",
-    alignContent: "center",
-    paddingLeft: 10,
-    borderWidth: 1,
-    marginBottom: 5,
+    backgroundColor: "#D1D5DB",
+    borderRadius: 10,
+    justifyContent: "space-around",
+    paddingLeft: 20,
+    marginTop: 10,
   },
-  title: {
-    fontSize: 35,
-    fontWeight: "bold",
-    color: "#333", // Text color (you can change the value)
-    lineHeight: 40, // Line height for the title (you can change the value)
-  },
-  subtitle: {
+  text: {
     fontSize: 20,
     fontWeight: "normal",
-    color: "#666", // Text color (you can change the value)
-    lineHeight: 24, // Line height for the subtitle (you can change the value)
+    color: "#4B5563",
   },
 });
