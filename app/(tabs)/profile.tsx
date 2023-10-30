@@ -1,21 +1,21 @@
-import { Button, Dimensions, StyleSheet, ScrollView } from "react-native";
+import { Button, Dimensions, StyleSheet } from "react-native";
 import { Text, View } from "../../components/Themed";
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
-
-export const blurhash =
-  "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeo";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 export default function Profile(): JSX.Element {
   const router = useRouter();
-  const fullName = "John Doe"; // Replace with actual data
-  const rollNumber = "2023BtechCSE001"; // Replace with actual data
-  const email = "johndoe@example.com"; // Replace with actual data
-  const contactNumber = "1234567890"; // Replace with actual data
-  const branch = "Computer Science"; // Replace with actual data
-  const section = "A"; // Replace with actual data
-  const admitYear = "2023"; // Replace with actual data
-  const gender = "Male"; // Replace with actual data
+  const params = useLocalSearchParams();
+  const { ...pros } = params;
+
+  const fullName = pros.student_name;
+  const rollNumber = pros.student_id;
+  const email = pros.email;
+  const contactNumber = pros.contact_number;
+  const branch = pros.branch;
+  const section = pros.section;
+  const admitYear = pros.admit_year;
+  const gender = pros.gender;
 
   return (
     <View style={styles.container}>
@@ -24,9 +24,6 @@ export default function Profile(): JSX.Element {
           <Image
             source={require("../../assets/images/profile.png")}
             style={styles.image}
-            placeholder={blurhash}
-            contentFit="cover"
-            transition={200}
           />
         </View>
         <View style={styles.textContainer}>
@@ -72,7 +69,7 @@ export default function Profile(): JSX.Element {
   );
 }
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
