@@ -1,84 +1,69 @@
+import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import CourseBox from "../CourseBox";
 import CourseName from "./CourseName";
-import { Link } from "expo-router";
-export default function CourseBody(): JSX.Element {
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
+
+export default function CourseBody({
+  course_name,
+  course_id,
+  course_objective,
+}: {
+  course_name: string;
+  course_id: string;
+  course_objective: string;
+}): JSX.Element {
+  const router = useRouter();
+  const handleSchedule = () => {
+    router.push({
+      pathname: "/schedule",
+      params: { course_id: course_id },
+    });
+  };
+
   return (
-    <View>
+    <View style={styles.container}>
       <ScrollView>
-        <View style={Styles.container1}>
+        <View style={styles.content}>
           <Link href="/qrScan" asChild>
-            <Pressable>
-              {({ pressed }) => (
-                <View style={{ opacity: pressed ? 0.5 : 1 }}>
-                  <CourseName name="QR" />
-                </View>
-              )}
+            <Pressable style={styles.box}>
+              <CourseName name="QR" />
             </Pressable>
           </Link>
           <Link href="/notification" asChild>
-            <Pressable>
-              {({ pressed }) => (
-                <View style={{ opacity: pressed ? 0.5 : 1 }}>
-                  <CourseName name="Notification" />
-                </View>
-              )}
+            <Pressable style={styles.box}>
+              <CourseName name="Notification" />
             </Pressable>
           </Link>
-          <Link href="/schedule" asChild>
-            <Pressable>
-              {({ pressed }) => (
-                <View style={{ opacity: pressed ? 0.5 : 1 }}>
-                  <CourseName name="Course Time Table " />
-                </View>
-              )}
-            </Pressable>
-          </Link>
+          <Pressable onPress={handleSchedule} style={styles.box}>
+            <CourseName name="Course Time Table" />
+          </Pressable>
         </View>
-        {/* <Text>Body</Text> */}
       </ScrollView>
     </View>
   );
 }
 
-const Styles = StyleSheet.create({
-  container1: {
-    flex: 1,
-    flexDirection: "column",
-    gap: 10,
-    padding: 10,
-    height: "100%",
-    width: "97%",
-    justifyContent: "center",
-    alignSelf: "center",
-    marginBottom: 5,
-  },
+const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    alignSelf: "center",
+    backgroundColor: "#F2F5F7",
+  },
+  content: {
+    flexDirection: "column",
     padding: 10,
-    height: "auto",
-    backgroundColor: "#D5E7F7",
+    justifyContent: "center",
+    alignSelf: "center",
   },
-  title: {
-    fontSize: 35,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "#333", // Text color (you can change the value)
-    lineHeight: 40, // Line height for the title (you can change the value)
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "#666", // Text color (you can change the value)
-    lineHeight: 24, // Line height for the subtitle (you can change the value)
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
+  box: {
+    width: "100%",
+    height: 60,
+    backgroundColor: "#E5E7EB",
+    borderRadius: 10,
+    justifyContent: "center",
+    paddingLeft: 10,
+    marginTop: 10,
   },
 });
