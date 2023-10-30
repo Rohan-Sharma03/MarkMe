@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet, Button, ToastAndroid } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 
@@ -8,6 +8,10 @@ export default function qrScan(): JSX.Element {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { id, other } = params;
+
+  function showToast() {
+    ToastAndroid.show("Attendance marked successfully!", ToastAndroid.SHORT);
+  }
 
   console.log(id, other);
 
@@ -37,7 +41,9 @@ export default function qrScan(): JSX.Element {
   }) => {
     setScanned(true);
     setText(data);
+    showToast();
     console.log("Type: " + type + "\nData: " + data);
+    router.back();
   };
 
   // Check permissions and return the screens
