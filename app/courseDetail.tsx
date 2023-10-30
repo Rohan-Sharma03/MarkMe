@@ -1,27 +1,25 @@
-import { View, Text } from "react-native";
+import React from "react";
+import { View } from "react-native";
 import CourseHeader from "../components/CourseBox/CourseHeader";
 import CourseBody from "../components/CourseBox/CourseBody";
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
-import { useRoute } from "@react-navigation/native";
-type RouteParams = {
-  course_name: string;
-  // Add other expected parameters here
-};
+import { useLocalSearchParams, useRouter } from "expo-router";
+
 export default function CourseDetail(): JSX.Element {
-  const navigation = useNavigation();
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { id, course_name, course_objective } = params;
+  const { course_name, course_id, course_objective } = params;
 
-  console.log(id, course_name);
-  const route = useRoute();
   return (
-    <View style={{ backgroundColor: "white" }}>
+    <View style={{ backgroundColor: "white", flex: 1 }}>
       <CourseHeader
         course_name={course_name.toString()}
         course_objective={course_objective.toString()}
       />
-      <CourseBody />
+      <CourseBody
+        course_name={course_name.toString()}
+        course_id={course_id.toString()}
+        course_objective={course_objective.toString()}
+      />
     </View>
   );
 }
