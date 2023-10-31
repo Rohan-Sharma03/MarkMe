@@ -33,6 +33,7 @@ export default function CourseBox({
       params: {
         post: "random",
         id: 86,
+        course_id: course_id,
         other: "This is other",
       },
     });
