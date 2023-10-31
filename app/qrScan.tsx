@@ -2,15 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Button, ToastAndroid } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { checkAccuracy } from "../assets/functions/locationUtils";
 
 export default function qrScan(): JSX.Element {
-  const navigation = useNavigation();
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { id, other } = params;
+  const { id, course_id, other } = params;
 
   function showToast() {
-    ToastAndroid.show("Attendance marked successfully!", ToastAndroid.SHORT);
+    ToastAndroid.show("Attendance marked successfully!", ToastAndroid.LONG);
+  }
+  function showFailedToast() {
+    ToastAndroid.show("Attendance marked not Marked !", ToastAndroid.LONG);
   }
 
   console.log(id, other);
@@ -32,7 +35,7 @@ export default function qrScan(): JSX.Element {
   }, []);
 
   // What happens when we scan the bar code
-  const handleBarCodeScanned = ({
+  const handleBarCodeScanned = async ({
     type,
     data,
   }: {
@@ -41,9 +44,15 @@ export default function qrScan(): JSX.Element {
   }) => {
     setScanned(true);
     setText(data);
-    showToast();
-    console.log("Type: " + type + "\nData: " + data);
-    router.back();
+    const value = await checkAccuracy(course_id, [26.835693, 75.650315], "api");
+    console.log("QR VALUE", value);
+    if (value) {
+      showToast();
+      console.log("Type: " + type + "\nData: " + data);
+    } else {
+      showFailedToast();
+    }
+    router.push("/(tabs)/home");
   };
 
   // Check permissions and return the screens
