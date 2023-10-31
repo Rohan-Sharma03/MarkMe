@@ -12,29 +12,43 @@ function TabBarIcon(props: {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
+// ... (imports remain unchanged)
+
+interface StudentData {
+  student_id: string;
+  student_name: string;
+  email: string;
+  contact_number: string;
+  branch: string;
+  section: string;
+  admit_year: number;
+}
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  const [studentData, setStudentData] = useState([]);
+  const [studentData, setStudentData] = useState<StudentData | null>(null);
 
-  const getUserDetails = async () => {
-    try {
-      const res = await axios.post(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/studentData`,
-        { data: "2020BTechCSE066" }
-      );
-      return res.data.data;
-    } catch (err) {
-      console.log(err);
-    }
-  };
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getUserDetails();
-      setStudentData(data);
+    const getUserDetails = async () => {
+      try {
+        const res = await axios.post(
+          `${process.env.EXPO_PUBLIC_API_URL}/api/studentData`,
+          { data: "2020BTechCSE066" }
+        );
+        setStudentData(res.data.data);
+        return res.data.data as StudentData; // Type assertion for the response data
+      } catch (err) {
+        console.log(err);
+        return null;
+      }
     };
-    fetchData();
+    getUserDetails();
   }, []);
+
+  if (!studentData) {
+    return null; // Return loading or placeholder component if data is not available
+  }
 
   return (
     <Tabs
@@ -44,9 +58,8 @@ export default function TabLayout() {
     >
       <Tabs.Screen
         name="home"
-        // initialParams={studentData}
         options={{
-          tabBarLabel: "Home", // Change the label instead of name
+          tabBarLabel: "Home",
           title: `Hello, ${studentData.student_name}`,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
@@ -67,7 +80,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="profile"
-        initialParams={studentData} // Pass params data here
+        initialParams={studentData}
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
