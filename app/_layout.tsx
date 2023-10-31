@@ -67,7 +67,7 @@ function RootLayoutNav() {
         />
         <Stack.Screen
           name="notification"
-          options={{ presentation: "modal", title: "Notification" }}
+          options={{ presentation: "modal", title: "Notifications" }}
         />
         <Stack.Screen
           name="qrScan"
