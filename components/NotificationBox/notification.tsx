@@ -1,28 +1,33 @@
 import { FontAwesome } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 
-export default function Notification({ name }: { name: string }): JSX.Element {
+export default function Notification({
+  subject,
+  message,
+}: {
+  subject: string;
+  message: string;
+}): JSX.Element {
+  const router = useRouter();
+  const handlePress = () => {
+    router.push({ pathname: "/notificationSummary", params: { msg: message } });
+  };
+
   return (
     <View style={styles.container}>
-      <Link href="/notificationSummary" asChild>
-        <Pressable
-          style={({ pressed }) => [
-            styles.pressable,
-            { opacity: pressed ? 0.5 : 1 },
-          ]}
-        >
-          <View style={styles.content}>
-            <FontAwesome
-              style={styles.icon}
-              name="bell"
-              size={25}
-              color="#60a5fa"
-            />
-            <Text style={styles.subtitle}>{name}</Text>
-          </View>
-        </Pressable>
-      </Link>
+      <Pressable onPress={handlePress}>
+        <View style={styles.content}>
+          <FontAwesome
+            style={styles.icon}
+            name="bell"
+            size={25}
+            color="#60a5fa"
+          />
+          <Text style={styles.subtitle}>{message}</Text>
+        </View>
+      </Pressable>
     </View>
   );
 }
@@ -30,27 +35,22 @@ export default function Notification({ name }: { name: string }): JSX.Element {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 60,
-    backgroundColor: "#F2F5F7",
-    borderRadius: 5,
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    marginBottom: 5,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    marginBottom: 15,
+    elevation: 5,
+    textDecoration: "none", // Ensure no underlines for the link
   },
   content: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 10,
+    padding: 15,
   },
   icon: {
-    paddingHorizontal: 10,
+    marginRight: 15,
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#333",
-  },
-  pressable: {
-    flex: 1,
   },
 });
