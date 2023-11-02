@@ -3,11 +3,45 @@ import { Text, View, StyleSheet, Button, ToastAndroid } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { checkAccuracy } from "../assets/functions/locationUtils";
+import axios from "axios";
 
 export default function qrScan(): JSX.Element {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { id, course_id, other } = params;
+  const timeStamp = new Date().toISOString();
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
+  const day = currentDate.getDate();
+
+  const postDate =
+    year +
+    "-" +
+    (month < 10 ? "0" : "") +
+    month +
+    "-" +
+    (day < 10 ? "0" : "") +
+    day;
+  const markAttendance = async () => {
+    try {
+      const res = axios.post(
+        `${process.env.EXPO_PUBLIC_API_URL}/api/csMarkAttendance `,
+        {
+          student_id: "2020BTechCSE066",
+          course_id: "CS1226",
+          accuracy: 10,
+          time_stamp: timeStamp,
+          date_of_attendance: postDate,
+          day_of_week: "Thrusdayr",
+          section: "A",
+          status: "A",
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   function showToast() {
     ToastAndroid.show("Attendance marked successfully!", ToastAndroid.LONG);
@@ -50,6 +84,7 @@ export default function qrScan(): JSX.Element {
       showToast();
       console.log("Type: " + type + "\nData: " + data);
     } else {
+      markAttendance();
       showFailedToast();
     }
     router.push("/(tabs)/home");
