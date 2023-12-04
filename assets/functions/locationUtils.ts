@@ -62,7 +62,7 @@ export async function checkAccuracy(
   ]);
 
   // Assuming a certain threshold for accuracy, e.g., 20 meters
-  if (distance <= 20) {
+  if (distance <= 200) {
     return true;
   } else {
     return false;

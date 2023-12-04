@@ -4,11 +4,13 @@ import { BarCodeScanner } from "expo-barcode-scanner";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { checkAccuracy } from "../assets/functions/locationUtils";
 import axios from "axios";
+import CourseName from "../components/CourseBox/CourseName";
 
 export default function qrScan(): JSX.Element {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { id, course_id, other } = params;
+  const { id, course_id, section, other } = params;
+  const [courseId, setCourseId] = useState("");
   const timeStamp = new Date().toISOString();
   const currentDate = new Date();
   const year = currentDate.getFullYear();
@@ -28,21 +30,33 @@ export default function qrScan(): JSX.Element {
       const res = axios.post(
         `${process.env.EXPO_PUBLIC_API_URL}/api/csMarkAttendance `,
         {
-          student_id: "2020BTechCSE066",
-          course_id: "CS1226",
+          student_id: id,
+          course_id: courseId,
           accuracy: 10,
           time_stamp: timeStamp,
           date_of_attendance: postDate,
-          day_of_week: "Thrusdayr",
-          section: "A",
-          status: "A",
+          day_of_week: getDayOfWeek(),
+          section: section,
+          status: "P",
         }
       );
     } catch (err) {
       console.log(err);
     }
   };
-
+  const getDayOfWeek = (): string => {
+    const days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const today = new Date().getDay();
+    return days[today];
+  };
   function showToast() {
     ToastAndroid.show("Attendance marked successfully!", ToastAndroid.LONG);
   }
@@ -80,6 +94,7 @@ export default function qrScan(): JSX.Element {
     setText(data);
     const value = await checkAccuracy(course_id, [26.835693, 75.650315], "api");
     console.log("QR VALUE", value);
+    setCourseId(course_id);
     if (value) {
       showToast();
       console.log("Type: " + type + "\nData: " + data);
