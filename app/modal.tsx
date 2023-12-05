@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  ToastAndroid,
 } from "react-native";
 import axios from "axios";
 import { Text, View } from "../components/Themed";
@@ -20,7 +21,9 @@ export default function ModalScreen() {
   useEffect(() => {
     enrollmentRequest();
   }, []);
-
+  function showToast(message: string) {
+    ToastAndroid.show(message, ToastAndroid.LONG);
+  }
   const enrollmentRequest = async () => {
     try {
       const res = await axios.post(
@@ -32,19 +35,27 @@ export default function ModalScreen() {
         }
       );
       if (res.data.success) {
-        setEnrolledCourses(res.data.data); // Store fetched courses in state
+        setEnrolledCourses(res.data.data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const [acceptedCourses, setAcceptedCourses] = useState<string[]>([]);
+  // Use object instead of array for accepted courses
+  const [acceptedCourses, setAcceptedCourses] = useState<
+    Record<string, boolean>
+  >({});
 
   const handleAccept = (courseId: string) => {
     console.log(`Accepted course with ID: ${courseId}`);
     acceptRequest(courseId);
-    setAcceptedCourses([...acceptedCourses, courseId]);
+
+    // Update acceptedCourses for the specific course ID
+    setAcceptedCourses((prevState) => ({
+      ...prevState,
+      [courseId]: true,
+    }));
   };
 
   const handleReject = (courseId: string) => {
@@ -61,6 +72,8 @@ export default function ModalScreen() {
           course_id: courseId,
         }
       );
+      console.log(res.data);
+      showToast(res.data.message);
       if (res.data.success) {
         console.log(res.data.data);
       }
@@ -70,7 +83,7 @@ export default function ModalScreen() {
   };
 
   const renderCourseItem = ({ item }: { item: Course }) => {
-    const isAccepted = acceptedCourses.includes(item.course_id);
+    const isAccepted = acceptedCourses[item.course_id]; // Check if the course is accepted
 
     return (
       <TouchableOpacity style={styles.courseContainer}>
@@ -103,7 +116,7 @@ export default function ModalScreen() {
       <FlatList
         data={enrolledCourses}
         renderItem={renderCourseItem}
-        keyExtractor={(item) => item.course_id}
+        keyExtractor={(item, index) => `${item.course_id}_${index}`}
       />
       <StatusBar />
     </View>

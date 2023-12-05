@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import CourseBox from "../../components/CourseBox";
 import axios from "axios";
+import { useLocalSearchParams } from "expo-router";
 
 interface Course {
   course_id: string;
@@ -23,7 +24,9 @@ export default function Home() {
   const [data, setData] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-
+  const params = useLocalSearchParams();
+  const { student_id } = params;
+  console.log("student_id", student_id);
   const getData = async () => {
     try {
       const res = await axios.get(
@@ -49,6 +52,7 @@ export default function Home() {
         course_name={course.course_name}
         course_id={course.course_id}
         course_objective={course.course_objective}
+        student_id={student_id}
       />
     ));
   };

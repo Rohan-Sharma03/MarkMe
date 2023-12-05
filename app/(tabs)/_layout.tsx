@@ -1,19 +1,12 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import React, { useEffect, useState } from "react";
 import { Link, Tabs } from "expo-router";
-import { Pressable, useColorScheme } from "react-native";
+import { Pressable, useColorScheme, ActivityIndicator } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Colors from "../../constants/Colors";
 import axios from "axios";
-import { useEffect, useState } from "react";
 
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
-
-// ... (imports remain unchanged)
-
+// ... (StudentData interface remains unchanged)
 interface StudentData {
   student_id: string;
   student_name: string;
@@ -24,30 +17,62 @@ interface StudentData {
   admit_year: number;
 }
 
+interface TabBarIconProps {
+  name: React.ComponentProps<typeof FontAwesome>["name"];
+  color: string;
+  size?: number;
+}
+
+const TabBarIcon: React.FC<TabBarIconProps> = ({ name, color, size = 28 }) => {
+  return <FontAwesome name={name} size={size} color={color} />;
+};
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
   const [studentData, setStudentData] = useState<StudentData | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // Loading state
 
   useEffect(() => {
-    const getUserDetails = async () => {
+    const fetchStudentData = async () => {
       try {
-        const res = await axios.post(
-          `${process.env.EXPO_PUBLIC_API_URL}/api/studentData`,
-          { data: "2020BTechCSE066" }
-        );
-        setStudentData(res.data.data);
-        return res.data.data as StudentData; // Type assertion for the response data
-      } catch (err) {
-        console.log(err);
-        return null;
+        let storedData = await AsyncStorage.getItem("studentData");
+        if (!storedData) {
+          const res = await axios.post(
+            `${process.env.EXPO_PUBLIC_API_URL}/api/studentData`,
+            { data: "2020BTechCSE066" }
+          );
+          const fetchedData = res.data.data as StudentData;
+          await AsyncStorage.setItem(
+            "studentData",
+            JSON.stringify(fetchedData)
+          );
+          console.log("the data recived :", fetchedData);
+          setStudentData(fetchedData);
+        } else {
+          setStudentData(JSON.parse(storedData));
+        }
+        setIsLoading(false); // Set loading state to false after data fetch
+      } catch (error) {
+        console.error("Error fetching student data:", error);
+        setIsLoading(false); // Set loading state to false in case of error
       }
     };
-    getUserDetails();
+
+    fetchStudentData();
   }, []);
+
+  if (isLoading) {
+    return (
+      <ActivityIndicator
+        size="large"
+        color={Colors[colorScheme ?? "light"].tint}
+      />
+    );
+  }
 
   if (!studentData) {
     return null; // Return loading or placeholder component if data is not available
+    // You might display an error message or retry option here
   }
 
   return (
@@ -58,6 +83,7 @@ export default function TabLayout() {
     >
       <Tabs.Screen
         name="home"
+        initialParams={studentData}
         options={{
           tabBarLabel: "Home",
           title: `Hello, ${studentData.student_name}`,

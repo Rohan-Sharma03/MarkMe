@@ -1,5 +1,11 @@
 // Function to calculate the distance between two coordinates using Haversine formula
 import * as Location from "expo-location";
+
+interface AccuracyInfo {
+  isAccurate: boolean;
+  distance: number;
+}
+
 export function calculateDistance(
   classroomCoordinates: number[],
   studentCoordinates: number[]
@@ -54,17 +60,17 @@ export async function checkAccuracy(
   courseId: string,
   classroomCoordinates: number[],
   apiURL: string
-): Promise<boolean> {
+): Promise<AccuracyInfo> {
   const studentCoordinates = await getStudentCoordinatesFromAPI(apiURL);
-  const distance = calculateDistance(classroomCoordinates, [
+  var distance = calculateDistance(classroomCoordinates, [
     studentCoordinates.latitude,
     studentCoordinates.longitude,
   ]);
+  const roundedDistance = Math.round(distance);
+  const isAccurate = distance <= 200;
 
-  // Assuming a certain threshold for accuracy, e.g., 20 meters
-  if (distance <= 200) {
-    return true;
-  } else {
-    return false;
-  }
+  return {
+    isAccurate,
+    distance: roundedDistance,
+  };
 }

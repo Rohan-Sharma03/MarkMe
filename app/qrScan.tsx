@@ -9,13 +9,14 @@ import CourseName from "../components/CourseBox/CourseName";
 export default function qrScan(): JSX.Element {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { id, course_id, section, other } = params;
-  const [courseId, setCourseId] = useState("");
+  const { studentId, courseId, section, other } = params;
+  // const [courseId, setCourseId] = useState("");
   const timeStamp = new Date().toISOString();
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
   const day = currentDate.getDate();
+  let newaccuracy: number = 0;
 
   const postDate =
     year +
@@ -27,19 +28,20 @@ export default function qrScan(): JSX.Element {
     day;
   const markAttendance = async () => {
     try {
-      const res = axios.post(
+      const res = await axios.post(
         `${process.env.EXPO_PUBLIC_API_URL}/api/csMarkAttendance `,
         {
-          student_id: id,
+          student_id: studentId,
           course_id: courseId,
-          accuracy: 10,
+          accuracy: newaccuracy.toString(),
           time_stamp: timeStamp,
           date_of_attendance: postDate,
           day_of_week: getDayOfWeek(),
-          section: section,
+          section: "A",
           status: "P",
         }
       );
+      console.log("mark Attendeance :", res.data);
     } catch (err) {
       console.log(err);
     }
@@ -64,7 +66,8 @@ export default function qrScan(): JSX.Element {
     ToastAndroid.show("Attendance marked not Marked !", ToastAndroid.LONG);
   }
 
-  console.log(id, other);
+  console.log(other);
+  console.log("student id:", studentId);
 
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState<boolean>(false);
@@ -92,14 +95,21 @@ export default function qrScan(): JSX.Element {
   }) => {
     setScanned(true);
     setText(data);
-    const value = await checkAccuracy(course_id, [26.835693, 75.650315], "api");
-    console.log("QR VALUE", value);
-    setCourseId(course_id);
-    if (value) {
+    const { isAccurate, distance } = await checkAccuracy(
+      courseId,
+      [26.835693, 75.650315],
+      "api"
+    );
+    console.log("QR VALUE", isAccurate);
+    console.log("Distnace :", distance);
+    newaccuracy = distance;
+
+    // setCourseId(course_id);
+    if (isAccurate) {
       showToast();
       console.log("Type: " + type + "\nData: " + data);
-    } else {
       markAttendance();
+    } else {
       showFailedToast();
     }
     router.push("/(tabs)/home");

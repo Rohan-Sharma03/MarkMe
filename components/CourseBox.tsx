@@ -8,10 +8,12 @@ export default function CourseBox({
   course_name,
   course_id,
   course_objective,
+  student_id,
 }: {
   course_name: string;
   course_id: string;
   course_objective: string;
+  student_id: string;
 }): JSX.Element {
   const facultyInOffice = false; // Change this to determine if the faculty is in the office
   const navigation = useNavigation();
@@ -24,6 +26,7 @@ export default function CourseBox({
         course_name: course_name,
         course_id: course_id,
         course_objective: course_objective,
+        student_id: student_id,
       },
     });
   };
@@ -33,8 +36,9 @@ export default function CourseBox({
       params: {
         post: "random",
         id: 86,
-        course_id: course_id,
+        courseId: course_id,
         other: "This is other",
+        studentId: student_id,
       },
     });
   };
