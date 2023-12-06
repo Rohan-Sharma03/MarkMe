@@ -1,4 +1,5 @@
-import { useRouter } from "expo-router";
+import axios from "axios";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import * as React from "react";
 import {
   View,
@@ -6,6 +7,7 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  ToastAndroid,
   Button,
 } from "react-native";
 
@@ -14,7 +16,9 @@ export default function Credential() {
   const [password, setPassword] = React.useState("");
   const [repeatedPassword, setRepeatedPassword] = React.useState("");
   const [passwordMatch, setPasswordMatch] = React.useState(true);
-
+  const params = useLocalSearchParams();
+  const { student_email } = params;
+  console.log(student_email);
   const handlePasswordChange = (value: string) => {
     setPassword(value);
     setPasswordMatch(value === repeatedPassword);
@@ -25,11 +29,36 @@ export default function Credential() {
     setPasswordMatch(value === password);
   };
 
+  function showToast(message: string) {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  }
+
+  const setCred = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_API_URL}/api/iSignIn`,
+        {
+          people_id: student_email,
+          people_password: repeatedPassword,
+          login_time: "2011-01-01 00:00:00",
+        }
+      );
+      console.log(response.data);
+      showToast(response.data.message);
+      if (response.data.status == 201) {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        handleSubmit();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSubmit = () => {
     // Add your submit logic here
     if (passwordMatch) {
       console.log("Passwords match. Submitting...");
-      router.push("/(tabs)/home");
+      router.push("/signin");
     } else {
       console.log("Passwords do not match. Please check again.");
     }
@@ -56,7 +85,7 @@ export default function Credential() {
         <Text style={styles.errorText}>Passwords do not match</Text>
       )}
       <View style={styles.buttonContainer}>
-        <Button title="Submit" onPress={handleSubmit} color="#4285f4" />
+        <Button title="Submit" onPress={setCred} color="#4285f4" />
       </View>
     </View>
   );

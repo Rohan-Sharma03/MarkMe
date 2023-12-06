@@ -1,3 +1,5 @@
+import axios from "axios";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   View,
@@ -12,19 +14,28 @@ import {
 } from "react-native";
 
 export default function CreateAccount() {
-  const [fullName, onChangeFullName] = useState("");
-  const [email, onChangeEmail] = useState("");
-  const [admitYear, onChangeAdmitYear] = useState("");
-  const [branch, onChangeBranch] = useState("");
-  const [rollNumber, onChangeRollNumber] = useState("");
-  const [contactNumber, onChangeContactNumber] = useState("");
-  const [section, onChangeSection] = useState("");
-  const [gender, onChangeGender] = useState("");
-
-  function showToast() {
-    ToastAndroid.show("Request sent successfully!", ToastAndroid.SHORT);
+  const [fullName, onChangeFullName] = useState("Rohan");
+  const [email, onChangeEmail] = useState("rohan@jklu.edu.in");
+  const [admitYear, onChangeAdmitYear] = useState("2020");
+  const [branch, onChangeBranch] = useState("BTechCSE");
+  const [rollNumber, onChangeRollNumber] = useState("2020BtechCSE066");
+  const [contactNumber, onChangeContactNumber] = useState("348795423");
+  const [section, onChangeSection] = useState("A");
+  const [gender, onChangeGender] = useState("Male");
+  const router = useRouter();
+  function showToast(message: string) {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
   }
-
+  const handleSignInOption = () => {
+    router.replace({
+      pathname: "/signin",
+      // params: {
+      //   post: "random",
+      //   id: 86,
+      //   student_email: email,
+      // },
+    });
+  };
   const validateFields = () => {
     if (
       fullName === "" ||
@@ -41,13 +52,40 @@ export default function CreateAccount() {
     }
     return true;
   };
-
-  const accountData = async () => {
+  const handleSetCredential = () => {
+    router.push({
+      pathname: "/credential",
+      params: {
+        post: "random",
+        id: 86,
+        student_email: email,
+      },
+    });
+  };
+  const createAccount = async () => {
     try {
       // if (!validateFields()) return;
-      // Add your axios request here
-      showToast();
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_API_URL}/api/csAccount`,
+        {
+          student_name: fullName,
+          email: email,
+          student_id: rollNumber,
+          contact_number: contactNumber,
+          branch: branch,
+          section: section,
+          admit_year: admitYear,
+          gender: gender,
+        }
+      );
+      console.log(response);
+      showToast(response.data.message);
+      if (response.data.status == 200) {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        handleSetCredential();
+      }
     } catch (error) {
+      showToast("ERROR");
       console.error(error);
       Alert.alert("Error", "An error occurred. Please try again later.");
     }
@@ -109,14 +147,14 @@ export default function CreateAccount() {
           placeholder="Gender"
         />
         <View style={styles.buttonContainer}>
-          <Button title="Submit" onPress={accountData} color="#4285f4" />
+          <Button title="Submit" onPress={createAccount} color="#4285f4" />
         </View>
       </View>
       <View style={styles.needHelpContainer}>
         <Text style={styles.subtitle}>Need any Help?</Text>
       </View>
       <Pressable
-        onPress={() => console.log("Navigate to sign in")}
+        onPress={() => handleSignInOption()}
         style={styles.signInContainer}
       >
         <Text style={styles.subtitle}>

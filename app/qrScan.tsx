@@ -96,7 +96,7 @@ export default function qrScan(): JSX.Element {
     setScanned(true);
     setText(data);
     const { isAccurate, distance } = await checkAccuracy(
-      courseId,
+      courseId.toString(),
       [26.835693, 75.650315],
       "api"
     );

@@ -1,21 +1,25 @@
+import React, { useEffect, useState } from "react";
 import { Button, Dimensions, StyleSheet } from "react-native";
 import { Text, View } from "../../components/Themed";
 import { Image } from "expo-image";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useAuth } from "../../context/authContext";
 
 export default function Profile(): JSX.Element {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { ...pros } = params;
-
-  const fullName = pros.student_name;
-  const rollNumber = pros.student_id;
-  const email = pros.email;
-  const contactNumber = pros.contact_number;
-  const branch = pros.branch;
-  const section = pros.section;
-  const admitYear = pros.admit_year;
-  const gender = pros.gender;
+  const { ...studentData } = params;
+  console.log("what does it contain :", studentData);
+  const { logout } = useAuth();
+  const handleLogout = () => {
+    if (router) {
+      logout();
+      router.replace("/signin"); // Redirect to the sign-in screen
+    } else {
+      console.error("Router is not initialized properly.");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -28,47 +32,51 @@ export default function Profile(): JSX.Element {
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.heading}>Profile Information</Text>
-          <Text style={styles.text}>
-            <Text style={styles.label}>Name: </Text>
-            {fullName}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.label}>Roll Number: </Text>
-            {rollNumber}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.label}>Email: </Text>
-            {email}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.label}>Contact Number: </Text>
-            {contactNumber}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.label}>Branch: </Text>
-            {branch}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.label}>Section: </Text>
-            {section}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.label}>Admit Year: </Text>
-            {admitYear}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.label}>Gender: </Text>
-            {gender}
-          </Text>
+          {studentData && (
+            <>
+              <Text style={styles.text}>
+                <Text style={styles.label}>Name: </Text>
+                {studentData.student_name}
+              </Text>
+              <Text style={styles.text}>
+                <Text style={styles.label}>Roll Number: </Text>
+                {studentData.student_id}
+              </Text>
+              <Text style={styles.text}>
+                <Text style={styles.label}>Email: </Text>
+                {studentData.email}
+              </Text>
+              <Text style={styles.text}>
+                <Text style={styles.label}>Contact Number: </Text>
+                {studentData.contact_number}
+              </Text>
+              <Text style={styles.text}>
+                <Text style={styles.label}>Branch: </Text>
+                {studentData.branch}
+              </Text>
+              <Text style={styles.text}>
+                <Text style={styles.label}>Section: </Text>
+                {studentData.section}
+              </Text>
+              <Text style={styles.text}>
+                <Text style={styles.label}>Admit Year: </Text>
+                {studentData.admit_year}
+              </Text>
+              <Text style={styles.text}>
+                <Text style={styles.label}>Gender: </Text>
+                {studentData.gender}
+              </Text>
+              {/* Include other fields similarly */}
+            </>
+          )}
         </View>
         <View style={styles.buttonContainer}>
-          <Button title="Log Out" onPress={() => router.push("/signin")} />
+          <Button title="Log Out" onPress={handleLogout} />
         </View>
       </View>
     </View>
   );
 }
-
 const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({

@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"; // Import 
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Colors from "../../constants/Colors";
 import axios from "axios";
+import { useAuth } from "../../context/authContext";
 
 // ... (StudentData interface remains unchanged)
 interface StudentData {
@@ -15,6 +16,7 @@ interface StudentData {
   branch: string;
   section: string;
   admit_year: number;
+  gender: string;
 }
 
 interface TabBarIconProps {
@@ -29,32 +31,27 @@ const TabBarIcon: React.FC<TabBarIconProps> = ({ name, color, size = 28 }) => {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const [studentData, setStudentData] = useState<StudentData | null>(null);
+  const [StudentData, setStudentData] = useState<StudentData>();
   const [isLoading, setIsLoading] = useState<boolean>(true); // Loading state
+  const { studentData } = useAuth();
+  console.log("data from useauth : ", studentData);
+  console.log("data from useState : ", StudentData);
 
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        let storedData = await AsyncStorage.getItem("studentData");
-        if (!storedData) {
-          const res = await axios.post(
-            `${process.env.EXPO_PUBLIC_API_URL}/api/studentData`,
-            { data: "2020BTechCSE066" }
-          );
-          const fetchedData = res.data.data as StudentData;
-          await AsyncStorage.setItem(
-            "studentData",
-            JSON.stringify(fetchedData)
-          );
-          console.log("the data recived :", fetchedData);
-          setStudentData(fetchedData);
-        } else {
+        const storedData = await AsyncStorage.getItem("studentData");
+        if (storedData !== null) {
           setStudentData(JSON.parse(storedData));
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+          // Handle the case when the stored data is null or not found
         }
-        setIsLoading(false); // Set loading state to false after data fetch
       } catch (error) {
         console.error("Error fetching student data:", error);
-        setIsLoading(false); // Set loading state to false in case of error
+        setIsLoading(false);
+        // Handle errors from AsyncStorage
       }
     };
 
@@ -70,7 +67,7 @@ export default function TabLayout() {
     );
   }
 
-  if (!studentData) {
+  if (!StudentData) {
     return null; // Return loading or placeholder component if data is not available
     // You might display an error message or retry option here
   }
@@ -83,10 +80,10 @@ export default function TabLayout() {
     >
       <Tabs.Screen
         name="home"
-        initialParams={studentData}
+        initialParams={StudentData}
         options={{
           tabBarLabel: "Home",
-          title: `Hello, ${studentData.student_name}`,
+          title: `Hello, ${StudentData.student_name}`,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
@@ -106,7 +103,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="profile"
-        initialParams={studentData}
+        initialParams={StudentData}
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
