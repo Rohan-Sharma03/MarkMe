@@ -5,7 +5,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { SplashScreen } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import { AuthProvider } from "../context/authContext"; // Import your AuthProvider or useAuth hook
@@ -48,7 +48,43 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <AuthProvider>
-        <StackComponents />
+        <Stack>
+          <Stack.Screen
+            name="signin"
+            options={{ presentation: "modal", title: "Sign In" }}
+          />
+          <Stack.Screen
+            name="createAccount"
+            options={{ presentation: "modal", title: "Create Account" }}
+          />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="modal"
+            options={{ presentation: "modal", title: "Course Requests" }}
+          />
+          <Stack.Screen
+            name="courseDetail"
+            options={{ presentation: "modal", title: "Course Details" }}
+          />
+          <Stack.Screen
+            name="notification"
+            options={{ presentation: "modal", title: "Notifications" }}
+          />
+          <Stack.Screen
+            name="qrScan"
+            options={{ presentation: "modal", title: "QR Scanner" }}
+          />
+          <Stack.Screen
+            name="schedule"
+            options={{ presentation: "modal", title: "Class Schedule" }}
+          />
+          <Stack.Screen
+            name="notificationSummary"
+            options={{ presentation: "modal", title: "Notification Details" }}
+          />
+        </Stack>
+
+        {/* <StackComponents /> */}
       </AuthProvider>
     </ThemeProvider>
   );

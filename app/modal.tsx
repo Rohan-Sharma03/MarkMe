@@ -6,6 +6,7 @@ import {
   FlatList,
   ToastAndroid,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { Text, View } from "../components/Themed";
 
@@ -17,13 +18,41 @@ interface Course {
 
 export default function ModalScreen() {
   const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
+  const [acceptedCourses, setAcceptedCourses] = useState<string[]>([]);
+  const [rejectedCourses, setRejectedCourses] = useState<string[]>([]);
 
   useEffect(() => {
     enrollmentRequest();
+    loadAcceptedCoursesFromStorage();
+    loadRejectedCoursesFromStorage();
   }, []);
+
+  async function loadAcceptedCoursesFromStorage() {
+    try {
+      const acceptedCourseIds = await AsyncStorage.getItem("acceptedCourses");
+      if (acceptedCourseIds !== null) {
+        setAcceptedCourses(JSON.parse(acceptedCourseIds));
+      }
+    } catch (error) {
+      console.error("Error loading accepted courses:", error);
+    }
+  }
+
+  async function loadRejectedCoursesFromStorage() {
+    try {
+      const rejectedCourseIds = await AsyncStorage.getItem("rejectedCourses");
+      if (rejectedCourseIds !== null) {
+        setRejectedCourses(JSON.parse(rejectedCourseIds));
+      }
+    } catch (error) {
+      console.error("Error loading rejected courses:", error);
+    }
+  }
+
   function showToast(message: string) {
     ToastAndroid.show(message, ToastAndroid.LONG);
   }
+
   const enrollmentRequest = async () => {
     try {
       const res = await axios.post(
@@ -42,27 +71,6 @@ export default function ModalScreen() {
     }
   };
 
-  // Use object instead of array for accepted courses
-  const [acceptedCourses, setAcceptedCourses] = useState<
-    Record<string, boolean>
-  >({});
-
-  const handleAccept = (courseId: string) => {
-    console.log(`Accepted course with ID: ${courseId}`);
-    acceptRequest(courseId);
-
-    // Update acceptedCourses for the specific course ID
-    setAcceptedCourses((prevState) => ({
-      ...prevState,
-      [courseId]: true,
-    }));
-  };
-
-  const handleReject = (courseId: string) => {
-    console.log(`Rejected course with ID: ${courseId}`);
-    // Add logic to handle rejecting the course
-  };
-
   const acceptRequest = async (courseId: string) => {
     try {
       const res = await axios.post(
@@ -72,10 +80,36 @@ export default function ModalScreen() {
           course_id: courseId,
         }
       );
-      console.log(res.data);
       showToast(res.data.message);
       if (res.data.success) {
-        console.log(res.data.data);
+        setAcceptedCourses([...acceptedCourses, courseId]);
+        await AsyncStorage.setItem(
+          "acceptedCourses",
+          JSON.stringify([...acceptedCourses, courseId])
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const rejectRequest = async (courseId: string) => {
+    // Add logic to handle rejecting the course
+    try {
+      const res = await axios.post(
+        `${process.env.EXPO_PUBLIC_API_URL}/api/csRejectEnrollment`,
+        {
+          student_id: "2020BTechCSE066",
+          course_id: courseId,
+        }
+      );
+      showToast(res.data.message);
+      if (res.data.success) {
+        setRejectedCourses([...rejectedCourses, courseId]);
+        await AsyncStorage.setItem(
+          "rejectedCourses",
+          JSON.stringify([...rejectedCourses, courseId])
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -83,28 +117,35 @@ export default function ModalScreen() {
   };
 
   const renderCourseItem = ({ item }: { item: Course }) => {
-    const isAccepted = acceptedCourses[item.course_id]; // Check if the course is accepted
+    const isAccepted = acceptedCourses.includes(item.course_id);
+    const isRejected = rejectedCourses.includes(item.course_id);
 
     return (
       <TouchableOpacity style={styles.courseContainer}>
-        <View style={styles.courseInfo}>
-          <Text style={styles.courseTitle}>{item.course_id}</Text>
-          <Text>{`Instructor: ${item.instructor_id}`}</Text>
-        </View>
-        {!isAccepted && (
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "#2ecc71" }]}
-              onPress={() => handleAccept(item.course_id)}
-            >
-              <Text style={styles.buttonText}>Accept</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "#e74c3c" }]}
-              onPress={() => handleReject(item.course_id)}
-            >
-              <Text style={styles.buttonText}>Reject</Text>
-            </TouchableOpacity>
+        {isAccepted && (
+          <Text style={styles.acceptedCourse}>{item.course_id} - Accepted</Text>
+        )}
+        {isRejected && (
+          <Text style={styles.rejectedCourse}>{item.course_id} - Rejected</Text>
+        )}
+        {!isAccepted && !isRejected && (
+          <View>
+            <Text style={styles.courseTitle}>{item.course_id}</Text>
+            <Text>{`Instructor: ${item.instructor_id}`}</Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#2ecc71" }]}
+                onPress={() => acceptRequest(item.course_id)}
+              >
+                <Text style={styles.buttonText}>Accept</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#e74c3c" }]}
+                onPress={() => rejectRequest(item.course_id)}
+              >
+                <Text style={styles.buttonText}>Reject</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </TouchableOpacity>
@@ -129,21 +170,12 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#f5f5f5",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
   courseContainer: {
     backgroundColor: "#fff",
     marginBottom: 10,
     padding: 15,
     borderRadius: 10,
     elevation: 3,
-  },
-  courseInfo: {
-    marginBottom: 10,
   },
   courseTitle: {
     fontSize: 20,
@@ -163,5 +195,15 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  acceptedCourse: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "green",
+  },
+  rejectedCourse: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "red",
   },
 });

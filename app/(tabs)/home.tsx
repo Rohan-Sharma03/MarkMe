@@ -18,7 +18,7 @@ interface Course {
   course_objective: string;
   instructor_id: string;
   timetable_id: string;
-  course_semester: number;
+  course_semester: number; // This field might need to be added to the Course interface
 }
 
 export default function Home() {
@@ -27,16 +27,17 @@ export default function Home() {
   const [error, setError] = useState(false);
   const params = useLocalSearchParams();
   const { student_id } = params;
-  // const { studentData } = useAuth();
-  console.log("student_id", student_id);
-  // console.log("Home : Student data :", studentData);
 
+  console.log("the course", data);
   const getData = async () => {
     try {
-      const res = await axios.get(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/getCourses`
+      const res = await axios.post(
+        `${process.env.EXPO_PUBLIC_API_URL}/api/getStudentSpecificCourse`,
+        {
+          student_id: "2020BTechCSE066", // Use the student_id received from params
+        }
       );
-      setData(res.data);
+      setData(res.data.data);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -44,8 +45,23 @@ export default function Home() {
       setError(true);
     }
   };
-
   useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await axios.post(
+          `${process.env.EXPO_PUBLIC_API_URL}/api/getStudentSpecificCourse`,
+          {
+            student_id: "2020BTechCSE066", // Use the student_id received from params
+          }
+        );
+        setData(res.data.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+        setError(true);
+      }
+    };
     getData();
   }, []);
 
@@ -85,7 +101,6 @@ export default function Home() {
     </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
   scroll: {
     backgroundColor: "#ffffff",
